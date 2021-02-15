@@ -90,8 +90,8 @@ def create_LFS_embed(role, requirements, userid):
         url=
         'https://media.discordapp.net/attachments/434369835254677517/662255647739346955/firstdraft.png'
     )
-    embed.add_field(name='Requirements', value=requirements, inline=False)
-    embed.add_field(name='Contact', value=userid, inline=True)
+    embed.add_field(name='Requirements: ', value=requirements, inline=False)
+    embed.add_field(name='Contact: ', value=userid, inline=False)
     return embed
 
 
@@ -108,14 +108,14 @@ def create_LFP_embed(team, role, sr, userid, extra=None):
         url=
         'https://media.discordapp.net/attachments/434369835254677517/662255647739346955/firstdraft.png'
     )
-    embed.add_field(name='Role', value=getRole(role), inline=True)
-    embed.add_field(name='SR', value=sr, inline=True)
-    embed.add_field(name='Requirements',
+    embed.add_field(name='Role: ', value=getRole(role), inline=True)
+    embed.add_field(name='SR: ', value=sr, inline=True)
+    embed.add_field(name='Requirements: ',
                     value=requirements[role],
                     inline=False)
     if (extra != None):
-        embed.add_field(name='Other Requirements', value=extra, inline=False)
-    embed.add_field(name='Contact', value=userid, inline=True)
+        embed.add_field(name='Other Requirements: ', value=extra, inline=False)
+    embed.add_field(name='Contact: ', value=userid, inline=False)
     return embed
 
 
@@ -131,24 +131,21 @@ def create_LFM_embed(team, sr, userid, extra=None):
         url=
         'https://media.discordapp.net/attachments/434369835254677517/662255647739346955/firstdraft.png'
     )
-    embed.add_field(name='Requirements',
+    embed.add_field(name='Requirements: ',
                     value="""
-                        -Manager needed for """ + sr + """SR team 
-                        -Able to find scrims, ringers, and players whenever required
-                        -Able to book vod review with coach when needed
-                        -Attendance at scrims is not mandatory
+                        -Manager needed for """ + sr + """SR team\n-Able to find scrims, ringers, and players whenever required\n-Able to book vod review with coach when needed\n-Attendance at scrims is not mandatory
                         """,
                     inline=False)
     if (extra != None):
-        embed.add_field(name='Other Requirements', value=extra, inline=False)
-    embed.add_field(name='Contact', value=userid, inline=True)
+        embed.add_field(name='Other Requirements: ', value=extra, inline=False)
+    embed.add_field(name='Contact: ', value=userid, inline=False)
     return embed
 
 
 #LOOKING FOR COACH
 
 
-def create_LFC_embed(team, userid, extra=None):
+def create_LFC_embed(team,sr, userid, extra=None):
     embed = discord.Embed(
         title="Pantheon Esports is looking for coach for team " +
         getTeam(team),
@@ -157,14 +154,15 @@ def create_LFC_embed(team, userid, extra=None):
         url=
         'https://media.discordapp.net/attachments/434369835254677517/662255647739346955/firstdraft.png'
     )
-    embed.add_field(name='Requirements',
-                    value="""-Able to attend at least a couple of scrims a week
+    #sr=sr.rstrip(" ")
+    embed.add_field(name='Requirements: ',
+                    value="""-Coach needed for """ + sr.strip() + """SR team\n-Able to attend at least a couple of scrims a week
 -Dedicated and motivated to improve
 -Experience preferred
 -Regular VOD reviews""")
     if (extra != None):
-        embed.add_field(name='Other Requirements', value=extra, inline=False)
-    embed.add_field(name='Contact', value=userid, inline=True)
+        embed.add_field(name='Other Requirements: ', value=extra, inline=False)
+    embed.add_field(name='Contact: ', value=userid, inline=False)
     return embed
 
 
@@ -177,20 +175,21 @@ async def on_ready():
 async def on_message(msg):
     if msg.author == client:
         return
-
     valid_channels = ["bot-channel-for-staff-and-managers"]
     #COMMANDS
     if str(msg.channel) in valid_channels:
         if msg.content.startswith('$LFC'):
+            print(msg.content)
             userid = msg.author.mention
             message = msg.content.split("$LFC ", 1)[1]
             team = message.split(" ")[0]
-            temp = team + " "
+            sr = message.split(" ")[1]
+            temp = team + " " + sr + " "
             try:
                 extra = message.split(temp, 1)[1]
             except:
                 extra = None
-            embed = create_LFC_embed(team, userid, extra)
+            embed = create_LFC_embed(team,sr, userid, extra)
             bot_channel = client.get_channel(bc)
             await bot_channel.send(embed=embed)
 
@@ -252,6 +251,7 @@ async def on_message(msg):
     -Should be able to play Genji, Hanzo, Mei
     -Previous team experience required**"""
             await msg.channel.send(message)
+
         if msg.content.startswith('$Help LFM'):
             message = """Command Format:        `$LFM {TeamName} {SR} {Extra Requirements}`
             
@@ -261,13 +261,15 @@ async def on_message(msg):
     **$LFM argos 2500+ 
     -No previous experience required**"""
             await msg.channel.send(message)
+            
         if msg.content.startswith('$Help LFC'):
-            message = """Command Format:        `$LFC {TeamName} {Extra Requirements}`
+            message = """Command Format:        `$LFC {TeamName} {SR} {Extra Requirements}`
 
                         Example:       
-    **$LFC saturn 
+    **$LFC saturn 3.3K
     -Must be atleast 4000SR**"""
             await msg.channel.send(message)
+
         if msg.content.startswith('$Help LFS'):
             message = """Command Format:        `$LFS [Role] [Requirements]`
 
