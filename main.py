@@ -13,17 +13,17 @@ requirements = {
     "MS":
     """-Must play most Main supports to a good level
 -Must be very vocal and able to ult track
--Heros: Lucio, Baptiste, Mercy, Brigitte""",
+-Heroes: Lucio, Baptiste, Mercy, Brigitte""",
     "FS":
     """-Must play most Flex supports to a good level
 -Must be very vocal and able to ult track
 -Heroes: Ana, Zenyatta, Moira, Baptiste """,
     "MT":
-    """-Must play most MainTanks to a good level 
+    """-Must play most Main Tanks to a good level 
 -Must be vocal and abble to target/shot call
 -Heroes: Winston, Reinhardt, Wrecking Ball, Orisa""",
     "OT":
-    """-Must play most MainTanks to a good level 
+    """-Must play most Off Tanks to a good level 
 -Must be vocal and abble to target/shot call
 -Heroes: Dva, Zarya, Sigma, Roadhog""",
     "HDPS":
@@ -68,7 +68,8 @@ def getTeam(team):
         'mars': 'Mars',
         'sol': 'Sol Invictus',
         'persephone': 'Persephone',
-        'argos': 'Argos'
+        'argos': 'Argos',
+        'hypnos':'Hypnos'
     }
     return switch.get(team, "None")
 
