@@ -20,11 +20,11 @@ requirements = {
 -Heroes: Ana, Zenyatta, Moira, Baptiste """,
     "MT":
     """-Must play most Main Tanks to a good level 
--Must be vocal and abble to target/shot call
+-Must be vocal and able to target/shot call
 -Heroes: Winston, Reinhardt, Wrecking Ball, Orisa""",
     "OT":
     """-Must play most Off Tanks to a good level 
--Must be vocal and abble to target/shot call
+-Must be vocal and able to target/shot call
 -Heroes: Dva, Zarya, Sigma, Roadhog""",
     "HDPS":
     """-Must play most hitscan dps to a good level
@@ -39,7 +39,7 @@ requirements = {
 -Must be vocal enough""",
     "ST":
     """-Must play most Tanks to a good level 
--Must be vocal and abble to target/shot call""",
+-Must be vocal and able to target/shot call""",
     "SS":
     """-Must play most supports to a good level
 -Must be very vocal and able to ult track"""
