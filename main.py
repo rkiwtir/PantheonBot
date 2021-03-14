@@ -4,10 +4,66 @@ import requests
 import json
 import random
 import re
+import datetime
+import calendar
 from replit import db
 from keep_alive import keep_alive
+#from discord.utils import get
+#from discord.ext import commands
+
 bc = 807207433503768606
+
 client = discord.Client()
+
+SM_Info="""_ _ 
+__**Staff Members**__
+<@193651616669237248>\n<@297432174448082974>\n<@571359999348047873>\n<@393172256135577612>\n<@235742158429093889>\n
+__**Teams Infomation**__
+<@&711849567808782359>:  <:Diamond:664150683590852618> 3.3k  Ⓜ️ <@317328097915568129>  🧢 <@373547458518581248>
+<@&721822855771324549>:  <:Diamond:664150683590852618> 3.1k  Ⓜ️ <@305010894537097217>  🧢 <@191320412334850059>
+<@&811288021461893210>:  <:Platinum:664150630717194258> 2.8k  Ⓜ️ <@456462984676638720>  🧢 <@206799386070614016>
+<@&788379443554418689>:  <:Platinum:664150630717194258> 2.7k  Ⓜ️ <@469924234697900032>  🧢 <@300326844492677121>
+<@&798849466530660382>:  <:Platinum:664150630717194258> 2.5k  Ⓜ️ <@370860911516188673>  🧢 <@320463639695851523>\n\n"""
+Socials_info ="""__**Socials**__
+<:discord:820672512044171284> Discord : https://discord.gg/5Pu52GPSaj
+<:twitter:820672510222794752> Twitter : https://twitter.com/PantheonEsport
+<:twitch:820672509561012235> Twitch : https://www.twitch.tv/pantheonesport
+<:youtube:820674331524726835> Youtube : https://www.youtube.com/channel/UCd7EYOnmsfV3WqlxaT93TYQ"""
+Server_Info=SM_Info+Socials_info
+
+Rules_1="""```diff
+To be sure this Community stays amazing, make sure you've read the Rules and Guidelines stated below.
+
+GROUND RULES
++ Be nice, Be respectful
+  - Be civil. It's fine to have opinions, but don't enforce them upon others. Refrain from sensitive topics like gender, sexual preference religion and politics. Banter is fully allowed but don't exaggerate it.
+  - No hate speech against anything. Period.
+  - If a Staff Member asks you to stop doing something, it's time to stop. Failure in doing so might get you in trouble.
+
++ Spamming isn't allowed
+  - This includes, but is not limited to: excessive use of capitalization, emojis, repeated lines of similar text/images/other content. Links and self-promotion can be done in media, but excessive spamming of said things is still not allowed.
+
++ Keep all discussion in the correct channels
+  - Discussion about things not meant to be discussed in the channel will be eventually removed, or the people doing it will be warned. Repeated violations will have consequences.
+  - The default server language is English. Please refrain from using any other language in public chats.
+  - Impersonation of any member, especially the staff, is not allowed. No NSFW names or pictures.
+  - The Staff reserves the right to change your nickname as and when they deem appropriate.
+
++ Doxing isn't allowed
+  - Sharing other people's personal information in text chat won't be tolerated, unless said people are consensual in such thing.```"""
+
+Rules_2="""```diff
++ VOICE CHAT RULES
+  - Try to keep background noise as low as possible as it can sabotage your team's performance.
+  - Signs of toxicity or hatred towards anything are to be strictly avoided.
+  - No intentional 'ear rape' or any other loud noises. This could get you muted from VCs.
+  - Joining a random VC just to troll the players will be treated as a serious offense.
+  - We have music bots and music VCs for those who want to listen to songs. Playing songs through your mic in other channels will result in being muted.
+
+- If you believe someone is breaking any of the above rules, send any of the Staff members a DM, preferably with proof. Action will be taken accordingly.```"""
+
+Join_Us="""Want to join Pantheon Esports as a team?
+**Fill this form:** https://forms.gle/z7dmKRmKc4B9397f8"""
 
 requirements = {
     "MS":
@@ -45,6 +101,16 @@ requirements = {
 -Must be very vocal and able to ult track"""
 }
 
+def getRoleMention(team):
+  team = team.lower()
+  switch = {
+      'saturn': '<@&711849567808782359>',
+      'mars': '<@&798849466530660382>',
+      'persephone': '<@&721822855771324549>',
+      'argos': '<@&788379443554418689>',
+      'hypnos':'<@&811288021461893210>'
+    }
+  return switch.get(team, 'none')
 
 def getRole(role):
     switch = {
@@ -60,13 +126,11 @@ def getRole(role):
     }
     return switch.get(role, "None")
 
-
 def getTeam(team):
     team = team.lower()
     switch = {
         'saturn': 'Saturn',
         'mars': 'Mars',
-        'sol': 'Sol Invictus',
         'persephone': 'Persephone',
         'argos': 'Argos',
         'hypnos':'Hypnos'
@@ -176,7 +240,7 @@ async def on_ready():
 async def on_message(msg):
     if msg.author == client:
         return
-    valid_channels = ["bot-channel-for-staff-and-managers"]
+    valid_channels = ["bot-channel-for-staff-and-managers","bot-commands","schedule","rules","apply-as-a-team","server-info"]
     #COMMANDS
     if str(msg.channel) in valid_channels:
         if msg.content.startswith('$LFC'):
@@ -247,7 +311,7 @@ async def on_message(msg):
                         Please mention hero requirements for Sub Roles in 'Extra Requirements'
                         Mention if previous team experience is required in 'Extra Requirements'
 
-                        Example:       
+                        \nExample:       
     **$LFP sol SDPS 2500-3000 
     -Should be able to play Genji, Hanzo, Mei
     -Previous team experience required**"""
@@ -258,7 +322,7 @@ async def on_message(msg):
             
             Mention if managerial experience is required
 
-                        Example:       
+                        \nExample:       
     **$LFM argos 2500+ 
     -No previous experience required**"""
             await msg.channel.send(message)
@@ -266,7 +330,7 @@ async def on_message(msg):
         if msg.content.startswith('$Help LFC'):
             message = """Command Format:        `$LFC {TeamName} {SR} {Extra Requirements}`
 
-                        Example:       
+                        \nExample:       
     **$LFC saturn 3.3K
     -Must be atleast 4000SR**"""
             await msg.channel.send(message)
@@ -274,10 +338,49 @@ async def on_message(msg):
         if msg.content.startswith('$Help LFS'):
             message = """Command Format:        `$LFS [Role] [Requirements]`
 
-                        Example:       
+                        \nExample:       
     **$LFS [Social Media Manager] [-Experience is preferred, but not mandatory
     -Knowledge of the role]**"""
             await msg.channel.send(message)
+        
+        if msg.content.startswith('$Help Schedule'):
+          message= """Command Format:        `$Schedule {TeamName}`
+          \nExample:       
+            **$Schedule hypnos**"""
+          await msg.channel.send(message)
+
+        
+        
+        if msg.content.startswith('$Rules'):
+          await msg.channel.send(Rules_1)
+          await msg.channel.send(Rules_2)
+        
+        
+        
+        
+        if msg.content.startswith('$Join'):
+          await msg.channel.send(Join_Us)
+        
+        #For Schedule
+        
+        if msg.content.startswith('$Schedule '):
+          team=msg.content.split("$Schedule ", 1)[1]
+          #test=discord.Role.id(820633395977125948)
+          react_pls=getRoleMention(team)+" Please react to the schedule. React with ❓ if you're unsure"
+          await msg.channel.send(react_pls)
+          #my_date = datetime.date.today()
+          for day in range(1, 8):  
+            tday = datetime.datetime.today() + datetime.timedelta(days=day)
+            val=calendar.day_name[tday.weekday()]+" "+ tday.strftime("%d-%B")
+            me= await msg.channel.send(str(val))
+            await me.add_reaction("<:yesvote:820626301915496529>")
+            await me.add_reaction("<:novote:820626301769220157>")
+            await me.add_reaction("❓")
+
+        #Server Info
+
+        if msg.content.startswith('$Info'):
+          await msg.channel.send(Server_Info)
 
 
 keep_alive()
