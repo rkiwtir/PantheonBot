@@ -22,8 +22,7 @@ __**Teams Infomation**__
 <@&711849567808782359>:  <:Diamond:664150683590852618> 3.3k  Ⓜ️ <@317328097915568129>  🧢 <@373547458518581248>
 <@&721822855771324549>:  <:Diamond:664150683590852618> 3.1k  Ⓜ️ <@305010894537097217>  🧢 <@191320412334850059>
 <@&811288021461893210>:  <:Platinum:664150630717194258> 2.8k  Ⓜ️ <@456462984676638720>  🧢 <@206799386070614016>
-<@&788379443554418689>:  <:Platinum:664150630717194258> 2.7k  Ⓜ️ <@469924234697900032>  🧢 <@300326844492677121>
-<@&798849466530660382>:  <:Platinum:664150630717194258> 2.5k  Ⓜ️ <@370860911516188673>  🧢 <@320463639695851523>\n\n"""
+<@&788379443554418689>:  <:Platinum:664150630717194258> 2.6k  Ⓜ️ <@469924234697900032>  🧢 <@300326844492677121>\n\n"""
 Socials_info ="""__**Socials**__
 <:discord:820672512044171284> Discord : https://discord.gg/5Pu52GPSaj
 <:twitter:820672510222794752> Twitter : https://twitter.com/PantheonEsport
@@ -108,7 +107,8 @@ def getRoleMention(team):
       'mars': '<@&798849466530660382>',
       'persephone': '<@&721822855771324549>',
       'argos': '<@&788379443554418689>',
-      'hypnos':'<@&811288021461893210>'
+      'hypnos':'<@&811288021461893210>',
+      'tba':'<@&822125183509856297>'
     }
   return switch.get(team, 'none')
 
@@ -133,7 +133,8 @@ def getTeam(team):
         'mars': 'Mars',
         'persephone': 'Persephone',
         'argos': 'Argos',
-        'hypnos':'Hypnos'
+        'hypnos':'Hypnos',
+        'tba':'TBA'
     }
     return switch.get(team, "None")
 
@@ -344,7 +345,8 @@ async def on_message(msg):
             await msg.channel.send(message)
         
         if msg.content.startswith('$Help Schedule'):
-          message= """Command Format:        `$Schedule {TeamName}`
+          message= """**Use this command in your team's schedule channel**\n
+          Command Format:        `$Schedule {TeamName}`
           \nExample:       
             **$Schedule hypnos**"""
           await msg.channel.send(message)
@@ -366,8 +368,10 @@ async def on_message(msg):
         if msg.content.startswith('$Schedule '):
           team=msg.content.split("$Schedule ", 1)[1]
           #test=discord.Role.id(820633395977125948)
-          react_pls=getRoleMention(team)+" Please react to the schedule. React with ❓ if you're unsure"
+          react_pls=getRoleMention(team)+" Please react to the schedule for the following days. React with  <:yesvote:820626301915496529>  if you are available,  <:novote:820626301769220157>  if you unavailable and  ❓  if you're unsure"
           await msg.channel.send(react_pls)
+          scheduletime="Scrims and VODs will be at 20CET/CEST unless mentioned otherwise"
+          await msg.channel.send(scheduletime)
           #my_date = datetime.date.today()
           for day in range(1, 8):  
             tday = datetime.datetime.today() + datetime.timedelta(days=day)
@@ -381,6 +385,12 @@ async def on_message(msg):
 
         if msg.content.startswith('$Info'):
           await msg.channel.send(Server_Info)
+
+        if msg.content.startswith('$Update'):
+          info_chan=client.get_channel(719590983603585194)
+          me=info_chan.get_partial_message(820677268028391426)
+          await me.edit(content=Server_Info)
+
 
 
 keep_alive()
